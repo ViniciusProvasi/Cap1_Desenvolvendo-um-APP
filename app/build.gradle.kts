@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.implementation
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -62,4 +64,6 @@ dependencies {
 
     //Dependecia do accompanist-navigation
     implementation("com.google.accompanist:accompanist-navigation-animation:0.34.0")
+
+
 }
