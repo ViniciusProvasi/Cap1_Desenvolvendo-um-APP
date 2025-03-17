@@ -1,9 +1,8 @@
-import org.gradle.kotlin.dsl.implementation
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.services) // Firebase
 }
 
 android {
@@ -42,7 +41,7 @@ android {
 }
 
 dependencies {
-
+    // Dependências básicas do Android e Compose
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -51,6 +50,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    // Testes
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -59,11 +60,34 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    //Dependências do Navigation
+    // Navegação
     implementation("androidx.navigation:navigation-compose:2.7.2")
-
-    //Dependecia do accompanist-navigation
     implementation("com.google.accompanist:accompanist-navigation-animation:0.34.0")
 
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-analytics")
 
+    // Retrofit (para APIs)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+
+    // Coil (para carregar imagens)
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
+    // ViewModel e LiveData
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+
+    // Datastore (para armazenamento local simples)
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // Splash Screen API
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
+    // Ícones do Material
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
 }

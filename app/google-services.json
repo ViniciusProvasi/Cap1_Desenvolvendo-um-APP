@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "953936096027",
+    "project_id": "cmeter-84b74",
+    "storage_bucket": "cmeter-84b74.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:953936096027:android:f0dd76619d6adbaf8f01be",
+        "android_client_info": {
+          "package_name": "br.com.fiap.cap1_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD37yLyT9Ct-L5QxG4xdrZEwGe-mHzrTOY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
