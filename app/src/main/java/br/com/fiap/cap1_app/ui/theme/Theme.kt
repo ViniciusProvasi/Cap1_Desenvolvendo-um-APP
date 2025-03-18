@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
     primary = Color.White,
-    secondary = Color.White,
+    secondary = Color(0xFF1CB201),
     tertiary = Color.White,
     background = Color(0xFF121212), // Preto
     surface = Color(0xFF1E1E1E),   // Cinza escuro
@@ -21,7 +21,7 @@ private val DarkColorScheme = darkColorScheme(
 
 private val LightColorScheme = lightColorScheme(
     primary = Color.Black,
-    secondary = Color.Black,
+    secondary = Color(0xFF1CB201),
     tertiary = Color.Black,
     background = Color(0xFFFFFBFE), // Branco
     surface = Color(0xFFFFFFFF),    // Branco

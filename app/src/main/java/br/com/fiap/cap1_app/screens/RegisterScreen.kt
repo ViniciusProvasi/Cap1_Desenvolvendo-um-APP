@@ -1,40 +1,55 @@
-package br.com.fiap.cap1_app.screens
-
-import android.R.attr.text
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun RegisterScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
     val auth = Firebase.auth
+    val firestore = Firebase.firestore
     val coroutineScope = rememberCoroutineScope()
 
     Column(
@@ -46,13 +61,31 @@ fun LoginScreen(navController: NavHostController) {
     ) {
         // Título
         Text(
-            text = "Bem-Vindo!",
+            text = "Cadastro",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
         )
 
         Spacer(modifier = Modifier.height(32.dp))
+
+        // Campo de Username
+        OutlinedTextField(
+            value = username,
+            onValueChange = { username = it },
+            label = { Text("Username") },
+            modifier = Modifier.fillMaxWidth(),
+            isError = errorMessage != null,
+            singleLine = true,
+            colors = TextFieldDefaults.colors(
+                errorIndicatorColor = Color.Red,
+                errorSupportingTextColor = Color.Red,
+                errorLabelColor = Color.Red,
+                errorCursorColor = Color.Red
+            )
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Campo de E-mail
         OutlinedTextField(
@@ -108,28 +141,57 @@ fun LoginScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Botão de Login
+        // Botão de Cadastro
         Button(
             onClick = {
-                if (email.isEmpty() || password.isEmpty()) {
+                if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
                     errorMessage = "Preencha todos os campos."
                 } else {
                     isLoading = true
                     errorMessage = null
                     coroutineScope.launch {
                         try {
-                            auth.signInWithEmailAndPassword(email, password)
+                            // Cria o usuário no Firebase Authentication
+                            auth.createUserWithEmailAndPassword(email, password)
                                 .addOnCompleteListener { task ->
-                                    isLoading = false
                                     if (task.isSuccessful) {
-                                        navController.navigate("menu") // Navega para o menu após o login
+                                        // Salva o username no Firestore
+                                        val userId = auth.currentUser?.uid
+                                        if (userId != null) {
+                                            val user = hashMapOf(
+                                                "username" to username,
+                                                "email" to email
+                                            )
+                                            println("Tentando salvar usuário no Firestore: $user") // Log
+                                            firestore.collection("users").document(userId)
+                                                .set(user)
+                                                .addOnSuccessListener {
+                                                    println("Usuário salvo com sucesso no Firestore!") // Log
+                                                    isLoading = false
+                                                    navController.navigate("menu") // Navega para o menu após o cadastro
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    println("Erro ao salvar usuário no Firestore: ${e.message}") // Log
+                                                    isLoading = false
+                                                    errorMessage =
+                                                        "Erro ao salvar dados do usuário: ${e.message}"
+                                                }
+                                        } else {
+                                            println("UserId é nulo!") // Log
+                                            isLoading = false
+                                            errorMessage = "Erro ao obter ID do usuário."
+                                        }
                                     } else {
-                                        errorMessage = task.exception?.message ?: "Erro ao fazer login."
+                                        println("Erro ao criar usuário no Firebase Authentication: ${task.exception?.message}") // Log
+                                        isLoading = false
+                                        errorMessage =
+                                            task.exception?.message ?: "Erro ao cadastrar."
                                     }
                                 }
                         } catch (e: Exception) {
+                            println("Erro inesperado: ${e.message}") // Log
                             isLoading = false
-                            errorMessage = e.message ?: "Erro ao fazer login."
+                            errorMessage = e.message ?: "Erro ao cadastrar."
                         }
                     }
                 }
@@ -144,7 +206,7 @@ fun LoginScreen(navController: NavHostController) {
                 CircularProgressIndicator(color = Color.White)
             } else {
                 Text(
-                    text = "Login",
+                    text = "Cadastrar",
                     fontSize = 18.sp,
                     color = Color.White,
                     fontWeight = FontWeight.Bold
@@ -152,29 +214,16 @@ fun LoginScreen(navController: NavHostController) {
             }
         }
 
-        Button(modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                navController.navigate("menu")
-            }) {
-            Text(text = "Proxima pagina - Nao faz login")
-        }
-
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Link para Cadastro
+        // Link para Login
         ClickableText(
-            text = AnnotatedString("Não tem uma conta? Cadastre-se"),
-            onClick = { navController.navigate("register") },
+            text = AnnotatedString("Já tem uma conta? Faça login"),
+            onClick = { navController.navigate("login") },
             style = MaterialTheme.typography.bodyMedium.copy(
                 color = MaterialTheme.colorScheme.primary,
                 textDecoration = TextDecoration.Underline
             )
         )
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun LoginScreenPreview() {
-    LoginScreen(navController = NavHostController(LocalContext.current))
 }

@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.implementation
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -69,6 +71,8 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-analytics")
+    // Login com Google
+    //implementation("com.google.android.gms:play-services-auth:20.7.0")
 
     // Retrofit (para APIs)
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

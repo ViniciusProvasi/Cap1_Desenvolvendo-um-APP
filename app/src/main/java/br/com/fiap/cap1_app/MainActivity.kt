@@ -1,5 +1,6 @@
 package br.com.fiap.cap1_app
 
+import RegisterScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.cap1_app.screens.LoginScreen
 import br.com.fiap.cap1_app.screens.MenuScreen
+import br.com.fiap.cap1_app.screens.PerfilScreen
 import br.com.fiap.cap1_app.screens.WelcomeScreen
 import br.com.fiap.cap1_app.ui.theme.Cap1APPTheme
 
@@ -36,6 +38,8 @@ class MainActivity : ComponentActivity() {
                         composable(route = "welcome") { WelcomeScreen(navController) }
                         composable(route = "login") { LoginScreen(navController) }
                         composable(route = "menu") { MenuScreen(navController) }
+                        composable(route = "perfil") { PerfilScreen(navController, "userId") }
+                        composable(route = "register") { RegisterScreen(navController) }
                     }
                 }
             }
