@@ -14,7 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import br.com.fiap.cap1_app.screens.LoginScreen
 import br.com.fiap.cap1_app.screens.MenuScreen
-
+import br.com.fiap.cap1_app.screens.PerfilScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -34,6 +34,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable(route = "login") { LoginScreen(navController) }
                         composable(route = "menu") { MenuScreen(navController) }
+                        composable(route = "perfil") { PerfilScreen(navController) }
                     }
                 }
             }
