@@ -156,7 +156,7 @@ fun LoginScreen(navController: NavHostController) {
             onClick = {
                 navController.navigate("menu")
             }) {
-            Text(text = "Proxima pagina - Nao faz login")
+            Text(text = "Proxima pagina - Testes Apenas")
         }
 
         Spacer(modifier = Modifier.height(16.dp))

@@ -1,11 +1,19 @@
 package br.com.fiap.cap1_app.screens
 
+import android.R.attr.text
+import android.R.id.text2
+import android.icu.text.CaseMap
 import android.view.Menu
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -17,7 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,8 +41,10 @@ import br.com.fiap.cap1_app.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 import br.com.fiap.cap1_app.viewmodels.UserViewModel
+import br.com.fiap.cap1_app.R
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuScreen(navController: NavHostController) {
     var username by remember { mutableStateOf("") }
@@ -51,7 +66,6 @@ fun MenuScreen(navController: NavHostController) {
             username = "Usuário não autenticado"
         }
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -59,13 +73,29 @@ fun MenuScreen(navController: NavHostController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround
+        ) {
+            TitleText(text1 = "DashBoard ", text2 = "- CMeter", color = Color.Green)
+            Image(
+                painterResource(id = R.drawable.ic_earth),
+                contentDescription = "Logo",
+                modifier = Modifier.size(48.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(200.dp))
+
         // Título do Dashboard
         Text(
-            text = "DASHBOARD - $username",
+            text = "Bem-Vindo - $username",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
         )
+
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -84,7 +114,7 @@ fun MenuScreen(navController: NavHostController) {
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
-        }
+       }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -130,7 +160,7 @@ fun MenuScreen(navController: NavHostController) {
         Button(
             onClick = { navController.navigate("login") }, // Navega de volta para a tela de login
             modifier = Modifier
-                .width(160.dp)
+                .width(120.dp)
                 .height(60.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
             shape = MaterialTheme.shapes.medium
@@ -144,6 +174,24 @@ fun MenuScreen(navController: NavHostController) {
         }
     }
 }
+@Composable
+fun TitleText(text1: String, text2: String, color: Color) {
+    Text(
+        text = buildAnnotatedString {
+            append(text1)
+            withStyle(
+                style = SpanStyle(
+                    color = color
+                )
+            ){
+                append(text2)
+            }
+        },
+        color = Color.White,
+        fontSize = 24.sp
+    )
+}
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
